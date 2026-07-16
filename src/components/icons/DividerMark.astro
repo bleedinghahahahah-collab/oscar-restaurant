@@ -1,0 +1,51 @@
+---
+// A small symmetric flourish flanked by hairlines, echoing the crest's own
+// divider ornament. Used sparingly — hero and footer only, never repeated as
+// a per-section eyebrow.
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`divider-mark ${className}`}>
+  <span class="divider-mark__line"></span>
+  <svg viewBox="0 0 120 40" class="divider-mark__glyph" aria-hidden="true" focusable="false">
+    <path
+      d="M46,20 C46,13 52,9 58,10 C54,12 51,16 51,20 C51,24 54,28 58,30 C52,31 46,27 46,20 Z"
+      fill="currentColor"
+    ></path>
+    <rect x="56" y="16" width="8" height="8" transform="rotate(45 60 20)" fill="currentColor"></rect>
+    <path
+      d="M74,20 C74,13 68,9 62,10 C66,12 69,16 69,20 C69,24 66,28 62,30 C68,31 74,27 74,20 Z"
+      fill="currentColor"
+    ></path>
+  </svg>
+  <span class="divider-mark__line"></span>
+</div>
+
+<style>
+  .divider-mark {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--gold-400);
+    width: min(320px, 60vw);
+  }
+
+  .divider-mark__line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, currentColor);
+  }
+
+  .divider-mark__line + .divider-mark__glyph + .divider-mark__line {
+    background: linear-gradient(90deg, currentColor, transparent);
+  }
+
+  .divider-mark__glyph {
+    width: 2.5rem;
+    height: 0.85rem;
+    flex-shrink: 0;
+  }
+</style>

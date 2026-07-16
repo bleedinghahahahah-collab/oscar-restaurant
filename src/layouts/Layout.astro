@@ -1,0 +1,107 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+import manropeCyrillicUrl from '../assets/fonts/manrope-cyrillic.woff2?url';
+import yesevaCyrillicUrl from '../assets/fonts/yesevaone-cyrillic.woff2?url';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = `${site.name} — ${site.tagline} в Ульяновске`, description = site.description } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0c1a14" />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${base}/favicon-32.png`} />
+    <link rel="icon" type="image/png" sizes="512x512" href={`${base}/favicon.png`} />
+    <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="restaurant.restaurant" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="ru_RU" />
+
+    <link rel="preload" href={manropeCyrillicUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={yesevaCyrillicUrl} as="font" type="font/woff2" crossorigin />
+
+    <style>
+      @font-face {
+        font-family: 'Manrope';
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: swap;
+        src: url('../assets/fonts/manrope-cyrillic.woff2') format('woff2');
+        unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+      }
+
+      @font-face {
+        font-family: 'Manrope';
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: swap;
+        src: url('../assets/fonts/manrope-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC,
+          U+2122;
+      }
+
+      @font-face {
+        font-family: 'Yeseva One';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('../assets/fonts/yesevaone-cyrillic.woff2') format('woff2');
+        unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+      }
+
+      @font-face {
+        font-family: 'Yeseva One';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('../assets/fonts/yesevaone-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC,
+          U+2122;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Перейти к содержанию</a>
+    <slot />
+  </body>
+</html>
+
+<script is:inline>
+  document.documentElement.classList.add('js');
+</script>
+
+<script>
+  const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+  if (revealEls.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
+    );
+
+    revealEls.forEach((el) => observer.observe(el));
+  }
+</script>

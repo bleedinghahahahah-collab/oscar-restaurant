@@ -1,0 +1,202 @@
+---
+import { Image } from 'astro:assets';
+import { categories } from '../data/menu';
+import { site } from '../data/site';
+import DividerMark from './icons/DividerMark.astro';
+
+const totalDishes = categories.reduce((sum, c) => sum + c.dishes.length, 0);
+---
+
+<section class="section menu lattice" id="menu">
+  <div class="container">
+    <div class="menu__intro">
+      <DividerMark />
+      <h2 class="section-heading">Меню</h2>
+      <p class="section-lede">
+        {totalDishes} блюд из настоящей кухни «Оскар» — супы, плов, шашлык, тандыр и восточные сладости.
+        Средний чек — около {site.avgBillRub} ₽ на человека. Актуальные цены и состав уточняйте по телефону.
+      </p>
+    </div>
+
+    <div class="menu__tabs" role="tablist" aria-label="Категории меню" data-menu-tabs>
+      {categories.map((cat, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`tab-${cat.id}`}
+          aria-controls={`panel-${cat.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          class="menu__tab"
+          data-menu-tab
+        >
+          {cat.label}
+        </button>
+      ))}
+    </div>
+
+    {categories.map((cat, i) => (
+      <div
+        role="tabpanel"
+        id={`panel-${cat.id}`}
+        aria-labelledby={`tab-${cat.id}`}
+        class="menu__panel"
+        hidden={i !== 0}
+        data-menu-panel
+      >
+        {cat.note && <p class="menu__note">{cat.note}</p>}
+        <div class="menu__grid">
+          {cat.dishes.map((dish, di) => (
+            <figure class="menu-item">
+              <div class="menu-item__frame">
+                <Image
+                  src={dish.image}
+                  alt={`${dish.name} — ${cat.label.toLowerCase()}, ресторан «Оскар»`}
+                  widths={[280, 420, 600]}
+                  sizes="(min-width: 64rem) 22vw, (min-width: 40rem) 30vw, 45vw"
+                  quality={70}
+                  loading={i === 0 && di < 4 ? 'eager' : 'lazy'}
+                  class="menu-item__img"
+                />
+              </div>
+              <figcaption class="menu-item__name">{dish.name}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .menu {
+    background: var(--bg-900);
+  }
+
+  .menu__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+    max-width: 52rem;
+    position: relative;
+  }
+
+  .menu__tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    scrollbar-width: thin;
+    position: relative;
+    z-index: 1;
+  }
+
+  .menu__tab {
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid var(--line-gold);
+    color: var(--text-secondary);
+    padding: 0.6rem 1.25rem;
+    border-radius: 999px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-out-quart), color var(--dur-fast) var(--ease-out-quart), border-color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .menu__tab:hover {
+    border-color: var(--gold-400);
+    color: var(--text-primary);
+  }
+
+  .menu__tab[aria-selected='true'] {
+    background: linear-gradient(180deg, var(--gold-400), var(--gold-500));
+    color: var(--accent-ink);
+    border-color: transparent;
+  }
+
+  .menu__note {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    font-style: italic;
+    margin: 0 0 var(--space-md);
+  }
+
+  .menu__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-md) var(--space-sm);
+  }
+
+  .menu-item {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .menu-item__frame {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--bg-800);
+  }
+
+  .menu-item__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-med) var(--ease-out-quart);
+  }
+
+  .menu-item:hover .menu-item__img {
+    transform: scale(1.06);
+  }
+
+  .menu-item__name {
+    font-size: var(--text-sm);
+    color: var(--ink-200);
+    line-height: 1.35;
+  }
+</style>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('[data-menu-tab]');
+  const panels = document.querySelectorAll<HTMLElement>('[data-menu-panel]');
+
+  function activate(index: number) {
+    tabs.forEach((tab, i) => {
+      const selected = i === index;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      panels[i].hidden = !selected;
+    });
+    tabs[index]?.focus();
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(j === i));
+        t.tabIndex = j === i ? 0 : -1;
+        panels[j].hidden = j !== i;
+      });
+    });
+
+    tab.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        activate((i + 1) % tabs.length);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        activate((i - 1 + tabs.length) % tabs.length);
+      }
+    });
+  });
+</script>

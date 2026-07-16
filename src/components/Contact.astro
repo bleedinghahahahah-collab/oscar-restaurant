@@ -1,0 +1,162 @@
+---
+import { site, waLink, reserveMessage } from '../data/site';
+import PhoneIcon from './icons/PhoneIcon.astro';
+import MapPinIcon from './icons/MapPinIcon.astro';
+import ClockIcon from './icons/ClockIcon.astro';
+import WhatsAppIcon from './icons/WhatsAppIcon.astro';
+import DividerMark from './icons/DividerMark.astro';
+---
+
+<section class="section contact lattice" id="contact">
+  <div class="container contact__inner">
+    <div class="contact__copy">
+      <DividerMark />
+      <h2 class="section-heading">Как нас найти</h2>
+      <p class="section-lede">Ждём вас в цокольном этаже на улице Льва Толстого — рядом с центром Ульяновска.</p>
+
+      <ul class="contact__list">
+        <li>
+          <MapPinIcon class="contact__icon" />
+          <div>
+            <p class="contact__list-label">{site.addressCity}</p>
+            <p class="contact__list-value">{site.address}</p>
+          </div>
+        </li>
+        <li>
+          <ClockIcon class="contact__icon" />
+          <div>
+            <p class="contact__list-label">Часы работы</p>
+            <p class="contact__list-value">Ежедневно, {site.hours.open}–{site.hours.close}</p>
+          </div>
+        </li>
+        <li>
+          <PhoneIcon class="contact__icon" />
+          <div>
+            <p class="contact__list-label">Телефоны</p>
+            {site.phones.map((phone) => (
+              <p class="contact__list-value">
+                <a href={`tel:${phone.tel}`} class="contact__phone-link">{phone.display}</a>
+              </p>
+            ))}
+          </div>
+        </li>
+      </ul>
+
+      <div class="contact__actions">
+        <a href={waLink(site.phones[0].wa, reserveMessage)} class="btn btn-primary" target="_blank" rel="noopener">
+          <WhatsAppIcon class="btn-icon" />
+          Написать в WhatsApp
+        </a>
+        <a href={site.yandexMapsUrl} target="_blank" rel="noopener" class="btn btn-ghost">Открыть в Яндекс Картах</a>
+      </div>
+    </div>
+
+    <div class="contact__map">
+      <iframe
+        src={site.yandexMapEmbedSrc}
+        title={`Карта: ${site.name}, ${site.address}`}
+        loading="lazy"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  .contact__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .contact__list {
+    list-style: none;
+    margin: var(--space-sm) 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    width: 100%;
+  }
+
+  .contact__list li {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: flex-start;
+  }
+
+  .contact__list :global(.contact__icon) {
+    width: 1.3rem;
+    height: 1.3rem;
+    color: var(--gold-400);
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  .contact__list-label {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .contact__list-value {
+    margin: 0.15rem 0 0;
+    color: var(--text-primary);
+    font-size: var(--text-body);
+  }
+
+  .contact__phone-link {
+    text-decoration: none;
+    color: inherit;
+    transition: color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .contact__phone-link:hover {
+    color: var(--gold-400);
+  }
+
+  .contact__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .contact__map {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line-gold);
+    box-shadow: 0 30px 60px -30px black;
+    filter: saturate(0.85);
+  }
+
+  .contact__map iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media (min-width: 56rem) {
+    .contact__inner {
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+
+    .contact__map {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 26rem;
+    }
+  }
+</style>

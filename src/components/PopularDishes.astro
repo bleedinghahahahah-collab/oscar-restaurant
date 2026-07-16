@@ -1,0 +1,163 @@
+---
+import { Image } from 'astro:assets';
+import { popularDishes } from '../data/menu';
+import CornerFlourish from './icons/CornerFlourish.astro';
+import DividerMark from './icons/DividerMark.astro';
+---
+
+<section class="section popular" id="popular">
+  <div class="container">
+    <div class="popular__intro">
+      <DividerMark />
+      <h2 class="section-heading">Хиты стола «Оскар»</h2>
+      <p class="section-lede">
+        Шесть блюд, с которых стоит начать знакомство с кухней — от дымного шашлыка до пахлавы к чаю.
+      </p>
+    </div>
+
+    <div class="popular__grid">
+      {popularDishes.map((dish, i) => (
+        <article
+          class={`dish-card dish-card--${dish.size === 'lg' ? 'lg' : i === 1 ? 'sm' : 'md'}`}
+          data-reveal
+          style={`--reveal-delay: ${Math.min(i, 4) * 90}ms`}
+        >
+          <div class="dish-card__frame">
+            <Image
+              src={dish.image}
+              alt={`${dish.name} — ${dish.categoryLabel.toLowerCase()}, ресторан «Оскар»`}
+              widths={dish.size === 'lg' ? [480, 800, 1200] : [360, 600, 840]}
+              sizes={dish.size === 'lg' ? '(min-width: 64rem) 55vw, 92vw' : '(min-width: 64rem) 30vw, 92vw'}
+              quality={74}
+              loading={i < 2 ? 'eager' : 'lazy'}
+              class="dish-card__img"
+            />
+            <CornerFlourish class="dish-card__corner dish-card__corner--tl" rotate={0} />
+            <CornerFlourish class="dish-card__corner dish-card__corner--br" rotate={180} />
+          </div>
+          <div class="dish-card__caption">
+            <p class="dish-card__category">{dish.categoryLabel}</p>
+            <h3 class="dish-card__name">{dish.name}</h3>
+            <p class="dish-card__desc">{dish.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .popular__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+    max-width: 42rem;
+  }
+
+  .popular__grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  .dish-card {
+    grid-column: span 6;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .dish-card__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line-gold);
+    aspect-ratio: 4 / 3;
+    background: var(--bg-800);
+  }
+
+  .dish-card--lg .dish-card__frame {
+    aspect-ratio: 5 / 4;
+  }
+
+  .dish-card--sm .dish-card__frame {
+    aspect-ratio: 3 / 4;
+  }
+
+  .dish-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out-quart);
+  }
+
+  .dish-card:hover .dish-card__img {
+    transform: scale(1.045);
+  }
+
+  .dish-card__frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, oklch(12.5% 0.032 var(--hue-emerald) / 78%) 100%);
+    pointer-events: none;
+  }
+
+  .dish-card__frame :global(.dish-card__corner) {
+    position: absolute;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--gold-400);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .dish-card__frame :global(.dish-card__corner--tl) {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .dish-card__frame :global(.dish-card__corner--br) {
+    bottom: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .dish-card__category {
+    margin: 0;
+    color: var(--accent);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .dish-card__name {
+    font-size: var(--text-xl);
+    color: var(--text-primary);
+  }
+
+  .dish-card--md .dish-card__name,
+  .dish-card--sm .dish-card__name {
+    font-size: var(--text-lg);
+  }
+
+  .dish-card__desc {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    max-width: 40ch;
+  }
+
+  @media (min-width: 48rem) {
+    .dish-card--lg {
+      grid-column: span 4;
+    }
+    .dish-card--sm {
+      grid-column: span 2;
+    }
+    .dish-card--md {
+      grid-column: span 3;
+    }
+  }
+</style>

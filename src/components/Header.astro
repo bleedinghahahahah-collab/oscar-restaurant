@@ -1,0 +1,302 @@
+---
+import { site, waLink, reserveMessage } from '../data/site';
+import Star8 from './icons/Star8.astro';
+import PhoneIcon from './icons/PhoneIcon.astro';
+import MenuIcon from './icons/MenuIcon.astro';
+import CloseIcon from './icons/CloseIcon.astro';
+
+const navLinks = [
+  { href: '#popular', label: 'Хиты' },
+  { href: '#menu', label: 'Меню' },
+  { href: '#reviews', label: 'Отзывы' },
+  { href: '#delivery', label: 'Доставка' },
+  { href: '#contact', label: 'Контакты' },
+];
+
+const primaryPhone = site.phones[0];
+---
+
+<header class="site-header" data-site-header>
+  <div class="container site-header__bar">
+    <a href="#top" class="brand-mark">
+      <Star8 class="brand-mark__star" />
+      <span class="brand-mark__name">{site.name}</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Основная навигация">
+      {navLinks.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
+    </nav>
+
+    <div class="site-header__actions">
+      <a href={`tel:${primaryPhone.tel}`} class="header-phone">
+        <PhoneIcon class="header-phone__icon" />
+        <span>{primaryPhone.display}</span>
+      </a>
+      <a href={waLink(primaryPhone.wa, reserveMessage)} class="btn btn-primary btn-sm" target="_blank" rel="noopener">
+        Заказать столик
+      </a>
+      <button type="button" class="menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="mobile-nav">
+        <MenuIcon class="menu-toggle__icon menu-toggle__icon--open" />
+        <CloseIcon class="menu-toggle__icon menu-toggle__icon--close" />
+        <span class="visually-hidden">Меню</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav" data-mobile-nav>
+    <div class="mobile-nav__collapse">
+      <nav aria-label="Мобильная навигация">
+        {navLinks.map((link) => (
+          <a href={link.href} data-mobile-nav-link>{link.label}</a>
+        ))}
+      </nav>
+      <div class="mobile-nav__actions">
+        {site.phones.map((phone) => (
+          <a href={`tel:${phone.tel}`} class="header-phone header-phone--mobile">
+            <PhoneIcon class="header-phone__icon" />
+            <span>{phone.display}</span>
+          </a>
+        ))}
+        <a href={waLink(primaryPhone.wa, reserveMessage)} class="btn btn-primary" target="_blank" rel="noopener">
+          Заказать столик
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-sticky);
+    background: transparent;
+    transition: background-color var(--dur-med) var(--ease-out-quart), box-shadow var(--dur-med) var(--ease-out-quart), backdrop-filter var(--dur-med) var(--ease-out-quart);
+  }
+
+  .site-header[data-scrolled='true'] {
+    background: oklch(16.5% 0.042 var(--hue-emerald) / 88%);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 0 var(--line-gold), 0 12px 30px -20px black;
+  }
+
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-block: 1.1rem;
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    flex-shrink: 0;
+  }
+
+  .brand-mark :global(.brand-mark__star) {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--gold-400);
+  }
+
+  .brand-mark__name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+  }
+
+  .site-nav {
+    display: none;
+    align-items: center;
+    gap: var(--space-lg);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .site-nav a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    position: relative;
+    padding-block: 0.3rem;
+    transition: color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: 0;
+    height: 1px;
+    background: var(--gold-400);
+    transition: right var(--dur-med) var(--ease-out-quart);
+  }
+
+  .site-nav a:hover {
+    color: var(--text-primary);
+  }
+
+  .site-nav a:hover::after {
+    right: 0;
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .header-phone {
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    transition: color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .header-phone:hover {
+    color: var(--gold-400);
+  }
+
+  .header-phone :global(.header-phone__icon) {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-gold);
+    background: transparent;
+    color: var(--text-primary);
+    position: relative;
+  }
+
+  .menu-toggle :global(.menu-toggle__icon) {
+    width: 1.25rem;
+    height: 1.25rem;
+    grid-area: 1 / 1;
+    transition: opacity var(--dur-fast) var(--ease-out-quart), transform var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .menu-toggle :global(.menu-toggle__icon--close) {
+    opacity: 0;
+    transform: scale(0.6) rotate(-45deg);
+  }
+
+  .menu-toggle[aria-expanded='true'] :global(.menu-toggle__icon--open) {
+    opacity: 0;
+    transform: scale(0.6) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded='true'] :global(.menu-toggle__icon--close) {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .mobile-nav {
+    display: grid;
+    grid-template-rows: 0fr;
+    background: var(--bg-900);
+    border-bottom: 1px solid var(--line-gold);
+    transition: grid-template-rows var(--dur-med) var(--ease-out-quart);
+  }
+
+  .mobile-nav[data-open='true'] {
+    grid-template-rows: 1fr;
+  }
+
+  .mobile-nav__collapse {
+    overflow: hidden;
+  }
+
+  .mobile-nav nav {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-md) clamp(1.25rem, 4vw, 3rem) 0;
+  }
+
+  .mobile-nav nav a {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    padding-block: var(--space-xs);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mobile-nav__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-md) clamp(1.25rem, 4vw, 3rem) var(--space-lg);
+  }
+
+  .header-phone--mobile {
+    display: flex;
+    font-size: var(--text-body);
+    color: var(--text-secondary);
+  }
+
+  @media (min-width: 62rem) {
+    .site-nav {
+      display: flex;
+    }
+
+    .header-phone {
+      display: flex;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    .mobile-nav {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const mobileNav = document.querySelector<HTMLElement>('[data-mobile-nav]');
+
+  const setScrolled = () => {
+    if (!header) return;
+    header.dataset.scrolled = window.scrollY > 8 ? 'true' : 'false';
+  };
+  setScrolled();
+  window.addEventListener('scroll', setScrolled, { passive: true });
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    mobileNav?.setAttribute('data-open', String(!isOpen));
+    document.body.style.overflow = !isOpen ? 'hidden' : '';
+  });
+
+  mobileNav?.querySelectorAll('[data-mobile-nav-link]').forEach((link) => {
+    link.addEventListener('click', () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      mobileNav.setAttribute('data-open', 'false');
+      document.body.style.overflow = '';
+    });
+  });
+</script>

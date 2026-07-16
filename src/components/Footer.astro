@@ -1,0 +1,160 @@
+---
+import { site } from '../data/site';
+import halalBadge from '../assets/brand/halal-badge.png';
+import Star8 from './icons/Star8.astro';
+import DividerMark from './icons/DividerMark.astro';
+
+const year = new Date().getFullYear();
+
+const navLinks = [
+  { href: '#popular', label: 'Хиты' },
+  { href: '#menu', label: 'Меню' },
+  { href: '#reviews', label: 'Отзывы' },
+  { href: '#delivery', label: 'Доставка' },
+  { href: '#contact', label: 'Контакты' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <a href="#top" class="brand-mark">
+        <Star8 class="brand-mark__star" />
+        <span class="brand-mark__name">{site.name}</span>
+      </a>
+      <p class="site-footer__tagline">{site.tagline}, {site.city}</p>
+      <img src={halalBadge.src} width="52" height="52" alt="Халяль" class="site-footer__halal" />
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Навигация в подвале">
+      {navLinks.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
+    </nav>
+
+    <div class="site-footer__contact">
+      {site.phones.map((phone) => (
+        <a href={`tel:${phone.tel}`}>{phone.display}</a>
+      ))}
+      <p>{site.address}, {site.addressCity}</p>
+      <p>Ежедневно, {site.hours.open}–{site.hours.close}</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <DividerMark class="site-footer__divider" />
+  </div>
+
+  <p class="site-footer__legal">
+    © {year} «{site.name}». Халяльная кухня Востока в {site.addressCity}.
+  </p>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--bg-950);
+    border-top: 1px solid var(--line-gold);
+    padding-top: var(--space-2xl);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+
+  .brand-mark :global(.brand-mark__star) {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--gold-400);
+  }
+
+  .brand-mark__name {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+  }
+
+  .site-footer__tagline {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .site-footer__halal {
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--line-gold);
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
+  }
+
+  .site-footer__nav a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: color var(--dur-fast) var(--ease-out-quart);
+  }
+
+  .site-footer__nav a:hover {
+    color: var(--gold-400);
+  }
+
+  .site-footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .site-footer__contact a {
+    color: var(--ink-200);
+    text-decoration: none;
+  }
+
+  .site-footer__contact a:hover {
+    color: var(--gold-400);
+  }
+
+  .site-footer__contact p {
+    margin: 0;
+  }
+
+  :global(.site-footer__divider) {
+    width: 100%;
+    max-width: none;
+    margin: var(--space-xl) 0 var(--space-lg);
+  }
+
+  .site-footer__legal {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    padding-bottom: var(--space-lg);
+    margin: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 1.3fr 0.8fr 1fr;
+      padding-inline: clamp(1.25rem, 4vw, 3rem);
+    }
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+import { site } from '../data/site';
+import StarIcon from './icons/StarIcon.astro';
+import Star8 from './icons/Star8.astro';
+import DividerMark from './icons/DividerMark.astro';
+
+const fullStars = Math.floor(site.rating);
+const hasHalf = site.rating - fullStars >= 0.25 && site.rating - fullStars < 0.75;
+const starFills: Array<'full' | 'half' | 'empty'> = Array.from({ length: 5 }, (_, i) => {
+  if (i < fullStars) return 'full';
+  if (i === fullStars && hasHalf) return 'half';
+  return 'empty';
+});
+---
+
+<section class="section reviews" id="reviews">
+  <div class="container reviews__inner">
+    <div class="reviews__copy">
+      <DividerMark />
+      <h2 class="section-heading">Что говорят гости</h2>
+      <p class="section-lede">
+        Мы не сочиняем цитаты за наших гостей — вот честный рейтинг с Яндекс Карт, который каждый может проверить
+        и дополнить своим отзывом.
+      </p>
+      <a href={site.yandexMapsUrl} target="_blank" rel="noopener" class="btn btn-ghost">
+        Читать отзывы на Яндекс Картах
+      </a>
+    </div>
+
+    <div class="rating-card" data-reveal>
+      <Star8 class="rating-card__watermark" />
+      <p class="rating-card__score">{site.rating.toFixed(1)}</p>
+      <div class="rating-card__stars" aria-hidden="true">
+        {starFills.map((fill) => (
+          <StarIcon class="rating-card__star" fill={fill} />
+        ))}
+      </div>
+      <p class="rating-card__meta">
+        <span class="visually-hidden">Рейтинг {site.rating} из 5, </span>
+        {site.reviewCount.toLocaleString('ru-RU')} отзывов · Яндекс Карты
+      </p>
+      <div class="rating-card__rule"></div>
+      <p class="rating-card__sub">Средний чек ≈ {site.avgBillRub} ₽ · открыты ежедневно {site.hours.open}–{site.hours.close}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews__inner {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+
+  .reviews__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .reviews__copy .btn {
+    margin-top: var(--space-sm);
+  }
+
+  .rating-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-800);
+    border: 1px solid var(--line-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl) var(--space-lg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .rating-card :global(.rating-card__watermark) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 22rem;
+    height: 22rem;
+    transform: translate(-50%, -50%);
+    color: var(--gold-500);
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  .rating-card__score {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 4vw + 2rem, 5.5rem);
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .rating-card__stars {
+    position: relative;
+    display: flex;
+    gap: 0.35rem;
+    margin-top: var(--space-sm);
+  }
+
+  .rating-card__stars :global(.rating-card__star) {
+    width: 1.4rem;
+    height: 1.4rem;
+    color: var(--gold-400);
+  }
+
+  .rating-card__meta {
+    position: relative;
+    margin-top: var(--space-sm);
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .rating-card__rule {
+    position: relative;
+    width: 3rem;
+    height: 1px;
+    background: var(--line-gold);
+    margin: var(--space-md) 0;
+  }
+
+  .rating-card__sub {
+    position: relative;
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    max-width: 26ch;
+  }
+
+  @media (min-width: 56rem) {
+    .reviews__inner {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space-2xl);
+    }
+  }
+</style>

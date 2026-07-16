@@ -1,0 +1,287 @@
+---
+import { Image } from 'astro:assets';
+import heroDish from '../assets/dishes/hot-plov.jpg';
+import crest from '../assets/brand/crest.png';
+import halalBadge from '../assets/brand/halal-badge.png';
+import { site, waLink, reserveMessage } from '../data/site';
+import CornerFlourish from './icons/CornerFlourish.astro';
+import Star8 from './icons/Star8.astro';
+---
+
+<section class="hero" id="top">
+  <div class="hero__media">
+    <Image
+      src={heroDish}
+      alt="Плов с томлёной бараниной — фирменное блюдо ресторана «Оскар»"
+      widths={[640, 960, 1400, 1920]}
+      sizes="100vw"
+      quality={72}
+      loading="eager"
+      fetchpriority="high"
+      class="hero__img"
+    />
+    <div class="hero__scrim"></div>
+    <div class="hero__lattice"></div>
+  </div>
+
+  <div class="hero__frame" aria-hidden="true">
+    <CornerFlourish class="hero__corner hero__corner--tl" rotate={0} />
+    <CornerFlourish class="hero__corner hero__corner--tr" rotate={90} />
+    <CornerFlourish class="hero__corner hero__corner--br" rotate={180} />
+    <CornerFlourish class="hero__corner hero__corner--bl" rotate={270} />
+  </div>
+
+  <div class="container hero__content">
+    <p class="hero__badge-row hero__reveal" style="--enter-delay: 60ms">
+      <img src={halalBadge.src} alt="" width="44" height="44" class="hero__halal" />
+      <span>Халяль-сертифицировано</span>
+      <Star8 class="hero__badge-star" />
+      <span>{site.rating.toFixed(1)} · {site.reviewCount} отзывов на Яндекс Картах</span>
+    </p>
+
+    <img
+      src={crest.src}
+      width={crest.width}
+      height={crest.height}
+      alt={`${site.name} — ресторан халяльной кухни`}
+      class="hero__crest hero__reveal"
+      style="--enter-delay: 180ms"
+    />
+
+    <h1 class="hero__title hero__reveal" style="--enter-delay: 340ms">
+      Кухня Востока в сердце {site.city === 'Ульяновск' ? 'Ульяновска' : site.city}
+    </h1>
+    <p class="hero__subtitle hero__reveal" style="--enter-delay: 460ms">
+      Плов, шашлык и тандыр по традиционным рецептам — халяль, без компромиссов на вкус, подачу и атмосферу.
+    </p>
+
+    <div class="hero__actions hero__reveal" style="--enter-delay: 580ms">
+      <a href={waLink(site.phones[0].wa, reserveMessage)} class="btn btn-primary" target="_blank" rel="noopener">
+        Заказать столик
+      </a>
+      <a href="#menu" class="btn btn-ghost">Посмотреть меню</a>
+    </div>
+  </div>
+
+  <a href="#popular" class="hero__scroll-cue" aria-label="Пролистать к популярным блюдам">
+    <span></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 35%;
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 90% at 50% 38%, oklch(16.5% 0.042 var(--hue-emerald) / 55%), oklch(12.5% 0.032 var(--hue-emerald) / 92%) 68%),
+      linear-gradient(180deg, oklch(12.5% 0.032 var(--hue-emerald) / 88%) 0%, oklch(12.5% 0.032 var(--hue-emerald) / 55%) 30%, oklch(12.5% 0.032 var(--hue-emerald) / 78%) 68%, var(--bg-950) 100%);
+  }
+
+  .hero__lattice {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, transparent 0 27px, oklch(80% 0.12 var(--hue-gold) / 6%) 27px 28px, transparent 28px 54px),
+      repeating-linear-gradient(-45deg, transparent 0 27px, oklch(80% 0.12 var(--hue-gold) / 6%) 27px 28px, transparent 28px 54px);
+    mix-blend-mode: overlay;
+  }
+
+  .hero__frame {
+    position: absolute;
+    top: 5rem;
+    right: clamp(0.75rem, 3vw, 2rem);
+    bottom: clamp(0.75rem, 3vw, 2rem);
+    left: clamp(0.75rem, 3vw, 2rem);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero__frame :global(.hero__corner) {
+    position: absolute;
+    width: clamp(2.5rem, 6vw, 4.5rem);
+    height: clamp(2.5rem, 6vw, 4.5rem);
+    color: var(--line-gold);
+    opacity: 0.8;
+  }
+
+  .hero__frame :global(.hero__corner--tl) {
+    top: 0;
+    left: 0;
+  }
+  .hero__frame :global(.hero__corner--tr) {
+    top: 0;
+    right: 0;
+  }
+  .hero__frame :global(.hero__corner--br) {
+    bottom: 0;
+    right: 0;
+  }
+  .hero__frame :global(.hero__corner--bl) {
+    bottom: 0;
+    left: 0;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-block: clamp(6rem, 14vh, 9rem) var(--space-2xl);
+    gap: var(--space-md);
+  }
+
+  .hero__reveal {
+    animation: hero-enter 900ms var(--ease-out-expo) both;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+
+  @keyframes hero-enter {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__reveal {
+      animation: none;
+    }
+  }
+
+  .hero__badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin: 0 0 var(--space-sm);
+    color: var(--ink-200);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .hero__halal {
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--line-gold);
+  }
+
+  .hero__badge-row :global(.hero__badge-star) {
+    width: 0.7rem;
+    height: 0.7rem;
+    color: var(--gold-400);
+    margin-left: 0.35rem;
+  }
+
+  .hero__crest {
+    width: min(560px, 82vw);
+    height: auto;
+    filter: drop-shadow(0 18px 40px oklch(5% 0.02 var(--hue-emerald) / 65%));
+  }
+
+  .hero__title {
+    font-size: var(--text-2xl);
+    color: var(--text-primary);
+    max-width: 20ch;
+  }
+
+  .hero__subtitle {
+    color: var(--ink-200);
+    font-size: var(--text-lg);
+    max-width: 46ch;
+    text-wrap: pretty;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .hero__scroll-cue {
+    position: absolute;
+    bottom: clamp(1.25rem, 3vh, 2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    width: 1.7rem;
+    height: 2.75rem;
+    border: 1.5px solid var(--line-gold);
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    padding-top: 0.4rem;
+  }
+
+  .hero__scroll-cue span {
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background: var(--gold-400);
+    animation: hero-scroll-cue 1.8s var(--ease-out-quart) infinite;
+  }
+
+  @keyframes hero-scroll-cue {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    70% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(0.85rem);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scroll-cue span {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .hero__scroll-cue {
+      display: none;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .hero__title {
+      max-width: 24ch;
+    }
+  }
+</style>

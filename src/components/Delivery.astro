@@ -1,0 +1,114 @@
+---
+import { Image } from 'astro:assets';
+import deliveryImage from '../assets/dishes/hot-skillet.jpg';
+import { site, waLink, deliveryMessage } from '../data/site';
+import PhoneIcon from './icons/PhoneIcon.astro';
+import WhatsAppIcon from './icons/WhatsAppIcon.astro';
+import ClockIcon from './icons/ClockIcon.astro';
+import DividerMark from './icons/DividerMark.astro';
+---
+
+<section class="section delivery" id="delivery">
+  <div class="container delivery__inner">
+    <div class="delivery__copy">
+      <DividerMark />
+      <h2 class="section-heading">Доставка и заказ навынос</h2>
+      <p class="section-lede">
+        Собираем заказ так же тщательно, как подаём в зале. Позвоните или напишите в WhatsApp — уточним состав,
+        адрес и время, оплата при получении.
+      </p>
+
+      <div class="delivery__hours">
+        <ClockIcon class="delivery__hours-icon" />
+        <span>Ежедневно, {site.hours.open}–{site.hours.close}</span>
+      </div>
+
+      <div class="delivery__actions">
+        {site.phones.map((phone) => (
+          <a href={`tel:${phone.tel}`} class="btn btn-ghost">
+            <PhoneIcon class="btn-icon" />
+            {phone.display}
+          </a>
+        ))}
+        <a href={waLink(site.phones[0].wa, deliveryMessage)} class="btn btn-primary" target="_blank" rel="noopener">
+          <WhatsAppIcon class="btn-icon" />
+          Заказать в WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="delivery__frame">
+      <Image
+        src={deliveryImage}
+        alt="Горячее блюдо «Оскар», готовое к доставке"
+        widths={[400, 640, 900]}
+        sizes="(min-width: 56rem) 32vw, 90vw"
+        quality={74}
+        loading="lazy"
+        class="delivery__img"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .delivery__inner {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+
+  .delivery__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .delivery__hours {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--ink-200);
+    font-size: var(--text-body);
+    margin-top: var(--space-2xs);
+  }
+
+  .delivery__hours :global(.delivery__hours-icon) {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--gold-400);
+  }
+
+  .delivery__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .delivery__frame {
+    order: -1;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line-gold);
+    box-shadow: 0 30px 60px -30px black;
+  }
+
+  .delivery__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (min-width: 56rem) {
+    .delivery__inner {
+      grid-template-columns: 0.95fr 1.05fr;
+    }
+
+    .delivery__frame {
+      order: 0;
+    }
+  }
+</style>

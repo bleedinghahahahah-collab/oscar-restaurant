@@ -1,0 +1,26 @@
+---
+interface Props {
+  class?: string;
+  fill?: 'full' | 'half' | 'empty';
+}
+const { class: className = '', fill = 'full' } = Astro.props;
+const id = Math.random().toString(36).slice(2, 9);
+---
+
+<svg viewBox="0 0 24 24" class={className} aria-hidden="true" focusable="false">
+  {fill === 'half' && (
+    <defs>
+      <linearGradient id={`star-half-${id}`}>
+        <stop offset="50%" stop-color="currentColor"></stop>
+        <stop offset="50%" stop-color="transparent"></stop>
+      </linearGradient>
+    </defs>
+  )}
+  <path
+    d="M12 2.8 14.7 9l6.6.6-5 4.4 1.5 6.4L12 17l-5.8 3.4 1.5-6.4-5-4.4L9.3 9 12 2.8Z"
+    fill={fill === 'empty' ? 'none' : fill === 'half' ? `url(#star-half-${id})` : 'currentColor'}
+    stroke="currentColor"
+    stroke-width={fill === 'empty' ? '1.4' : '0'}
+    stroke-linejoin="round"
+  ></path>
+</svg>

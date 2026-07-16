@@ -1,0 +1,27 @@
+---
+// One ornamental frame corner, rotated per placement via the `rotate` prop
+// (0 = top-left, 90 = top-right, 180 = bottom-right, 270 = bottom-left).
+interface Props {
+  class?: string;
+  rotate?: 0 | 90 | 180 | 270;
+}
+const { class: className = '', rotate = 0 } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 80 80"
+  class={className}
+  style={`transform: rotate(${rotate}deg)`}
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    d="M76,8 H30 Q10,8 10,28 V76"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+  ></path>
+  <path d="M76,8 V16" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+  <path d="M10,76 H18" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+  <rect x="14" y="14" width="7" height="7" transform="rotate(45 17.5 17.5)" fill="currentColor"></rect>
+</svg>
