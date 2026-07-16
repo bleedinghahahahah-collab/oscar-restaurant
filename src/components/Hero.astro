@@ -117,6 +117,7 @@ const delayFor = (i: number) => -(((fadeInSeconds - i * slotSeconds) % cycleSeco
     object-fit: cover;
     object-position: 50% 35%;
     opacity: 0;
+    filter: brightness(1.1);
     animation: hero-crossfade var(--cycleSeconds) ease-in-out infinite;
   }
 
@@ -238,17 +239,18 @@ const delayFor = (i: number) => -(((fadeInSeconds - i * slotSeconds) % cycleSeco
 
   .hero__crest-wrap {
     position: relative;
-    width: min(560px, 82vw);
+    width: min(620px, 86vw);
     display: grid;
     place-items: center;
+    padding-block: var(--space-md);
   }
 
   .hero__crest-wrap::before {
     content: '';
     position: absolute;
-    inset: -18%;
-    background: radial-gradient(closest-side, oklch(20% 0.05 var(--hue-emerald) / 85%), transparent 72%);
-    filter: blur(18px);
+    inset: -10% -6%;
+    background: radial-gradient(closest-side, oklch(18% 0.045 var(--hue-emerald) / 90%), transparent 75%);
+    filter: blur(22px);
     z-index: -1;
   }
 
@@ -256,9 +258,7 @@ const delayFor = (i: number) => -(((fadeInSeconds - i * slotSeconds) % cycleSeco
     width: 100%;
     height: auto;
     display: block;
-    mask-image: radial-gradient(ellipse 62% 68% at 50% 50%, black 62%, transparent 92%);
-    -webkit-mask-image: radial-gradient(ellipse 62% 68% at 50% 50%, black 62%, transparent 92%);
-    filter: drop-shadow(0 18px 34px oklch(5% 0.02 var(--hue-emerald) / 55%));
+    filter: drop-shadow(0 10px 22px oklch(4% 0.02 var(--hue-emerald) / 70%));
   }
 
   .hero__title {
