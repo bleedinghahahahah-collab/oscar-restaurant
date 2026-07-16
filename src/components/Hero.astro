@@ -1,25 +1,47 @@
 ---
 import { Image } from 'astro:assets';
-import heroDish from '../assets/dishes/hot-plov.jpg';
+import heroDish1 from '../assets/dishes/hot-plov.jpg';
+import heroDish2 from '../assets/dishes/tandyr-chicken-tabaka.jpg';
+import heroDish3 from '../assets/dishes/skewer-lyulya-lamb.jpg';
+import heroDish4 from '../assets/dishes/hot-chakhokhbili.jpg';
+import heroDish5 from '../assets/dishes/hot-barbecue.jpg';
 import crest from '../assets/brand/crest.png';
 import halalBadge from '../assets/brand/halal-badge.png';
 import { site, waLink, reserveMessage } from '../data/site';
 import CornerFlourish from './icons/CornerFlourish.astro';
 import Star8 from './icons/Star8.astro';
+
+const heroImages = [
+  { src: heroDish1, alt: 'Плов с томлёной бараниной — фирменное блюдо ресторана «Оскар»' },
+  { src: heroDish2, alt: 'Цыплёнок табака в тандыре — ресторан «Оскар»' },
+  { src: heroDish3, alt: 'Люля-кебаб из баранины на углях — ресторан «Оскар»' },
+  { src: heroDish4, alt: 'Чахохбили — ресторан «Оскар»' },
+  { src: heroDish5, alt: 'Барбекю на мангале — ресторан «Оскар»' },
+];
+const slotSeconds = 5;
+const cycleSeconds = slotSeconds * heroImages.length;
+// keyframes reach full opacity at the 4%-of-cycle mark; offset each image's
+// delay so it's already at that point at the start of its own slot (image 0
+// is fully visible immediately at page load, not fading in from black).
+const fadeInSeconds = 0.04 * cycleSeconds;
+const delayFor = (i: number) => -(((fadeInSeconds - i * slotSeconds) % cycleSeconds) + cycleSeconds) % cycleSeconds;
 ---
 
 <section class="hero" id="top">
   <div class="hero__media">
-    <Image
-      src={heroDish}
-      alt="Плов с томлёной бараниной — фирменное блюдо ресторана «Оскар»"
-      widths={[640, 960, 1400, 1920]}
-      sizes="100vw"
-      quality={72}
-      loading="eager"
-      fetchpriority="high"
-      class="hero__img"
-    />
+    {heroImages.map((img, i) => (
+      <Image
+        src={img.src}
+        alt={img.alt}
+        widths={[640, 960, 1400, 1920]}
+        sizes="100vw"
+        quality={68}
+        loading={i === 0 ? 'eager' : 'lazy'}
+        fetchpriority={i === 0 ? 'high' : 'auto'}
+        class="hero__img"
+        style={`animation-delay: ${delayFor(i)}s`}
+      />
+    ))}
     <div class="hero__scrim"></div>
     <div class="hero__lattice"></div>
   </div>
@@ -39,14 +61,15 @@ import Star8 from './icons/Star8.astro';
       <span>{site.rating.toFixed(1)} · {site.reviewCount} отзывов на Яндекс Картах</span>
     </p>
 
-    <img
-      src={crest.src}
-      width={crest.width}
-      height={crest.height}
-      alt={`${site.name} — ресторан халяльной кухни`}
-      class="hero__crest hero__reveal"
-      style="--enter-delay: 180ms"
-    />
+    <div class="hero__crest-wrap hero__reveal" style="--enter-delay: 180ms">
+      <img
+        src={crest.src}
+        width={crest.width}
+        height={crest.height}
+        alt={`${site.name} — ресторан халяльной кухни`}
+        class="hero__crest"
+      />
+    </div>
 
     <h1 class="hero__title hero__reveal" style="--enter-delay: 340ms">
       Кухня Востока в сердце {site.city === 'Ульяновск' ? 'Ульяновска' : site.city}
@@ -68,7 +91,7 @@ import Star8 from './icons/Star8.astro';
   </a>
 </section>
 
-<style>
+<style define:vars={{ cycleSeconds: `${cycleSeconds}s` }}>
   .hero {
     position: relative;
     min-height: 100svh;
@@ -87,10 +110,42 @@ import Star8 from './icons/Star8.astro';
   }
 
   .hero__img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: 50% 35%;
+    opacity: 0;
+    animation: hero-crossfade var(--cycleSeconds) ease-in-out infinite;
+  }
+
+  @keyframes hero-crossfade {
+    0% {
+      opacity: 0;
+    }
+    4% {
+      opacity: 1;
+    }
+    16% {
+      opacity: 1;
+    }
+    21% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__img {
+      animation: none;
+      opacity: 0;
+    }
+    .hero__img:first-child {
+      opacity: 1;
+    }
   }
 
   .hero__scrim {
@@ -156,28 +211,6 @@ import Star8 from './icons/Star8.astro';
     gap: var(--space-md);
   }
 
-  .hero__reveal {
-    animation: hero-enter 900ms var(--ease-out-expo) both;
-    animation-delay: var(--enter-delay, 0ms);
-  }
-
-  @keyframes hero-enter {
-    from {
-      opacity: 0;
-      transform: translateY(22px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero__reveal {
-      animation: none;
-    }
-  }
-
   .hero__badge-row {
     display: flex;
     align-items: center;
@@ -203,10 +236,29 @@ import Star8 from './icons/Star8.astro';
     margin-left: 0.35rem;
   }
 
-  .hero__crest {
+  .hero__crest-wrap {
+    position: relative;
     width: min(560px, 82vw);
+    display: grid;
+    place-items: center;
+  }
+
+  .hero__crest-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -18%;
+    background: radial-gradient(closest-side, oklch(20% 0.05 var(--hue-emerald) / 85%), transparent 72%);
+    filter: blur(18px);
+    z-index: -1;
+  }
+
+  .hero__crest {
+    width: 100%;
     height: auto;
-    filter: drop-shadow(0 18px 40px oklch(5% 0.02 var(--hue-emerald) / 65%));
+    display: block;
+    mask-image: radial-gradient(ellipse 62% 68% at 50% 50%, black 62%, transparent 92%);
+    -webkit-mask-image: radial-gradient(ellipse 62% 68% at 50% 50%, black 62%, transparent 92%);
+    filter: drop-shadow(0 18px 34px oklch(5% 0.02 var(--hue-emerald) / 55%));
   }
 
   .hero__title {
@@ -228,6 +280,28 @@ import Star8 from './icons/Star8.astro';
     justify-content: center;
     gap: var(--space-sm);
     margin-top: var(--space-sm);
+  }
+
+  .hero__reveal {
+    animation: hero-enter 900ms var(--ease-out-expo) both;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+
+  @keyframes hero-enter {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__reveal {
+      animation: none;
+    }
   }
 
   .hero__scroll-cue {

@@ -8,7 +8,7 @@ import ClockIcon from './icons/ClockIcon.astro';
 import DividerMark from './icons/DividerMark.astro';
 ---
 
-<section class="section delivery" id="delivery">
+<section class="section delivery lattice glow" id="delivery" style="--glow-pos: 85% 15%">
   <div class="container delivery__inner">
     <div class="delivery__copy">
       <DividerMark />
@@ -52,6 +52,10 @@ import DividerMark from './icons/DividerMark.astro';
 </section>
 
 <style>
+  .delivery {
+    background: var(--bg-900);
+  }
+
   .delivery__inner {
     display: grid;
     gap: var(--space-2xl);
